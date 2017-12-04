@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(SolutionDir)packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets"/>
+
+  <PropertyGroup>
+    <!-- Version number -->
+    <BuildNumber></BuildNumber>
+    <FullVersion Condition="'$(FullVersion)'==''">$([System.DateTime]::Now.ToString("yy.MM.dd.HHmm"))</FullVersion>
+	<Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
+
+    <!-- Output folder -->
+    <OutputPath>$(SolutionDir)build\bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
+    <IntermediateOutputPath>$(SolutionDir)build\obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
+    <OutDir>$(OutputPath)</OutDir>
+    <IntDir>$(IntermediateOutputPath)</IntDir>
+    <OutputDirectory>$(OutputPath)</OutputDirectory>
+    <IntermediateDirectory>$(IntermediateOutputPath)</IntermediateDirectory>
+  </PropertyGroup>
+
+  <!-- =================================================================== -->
+  <!-- Version -->
+  <!-- =================================================================== -->
+  <!-- C# generate version -->
+  <Target Name="GenerateVersion" BeforeTargets="BeforeCompile">
+    <GitVersion LocalPath="$(MSBuildProjectDirectory)" ToolPath="C:\Program Files\Git\bin" Short="False" >
+      <Output TaskParameter="CommitHash" PropertyName="GitHash"/>
+    </GitVersion>
+    <ItemGroup>
+      <AssemblyAttributes Include="AssemblyVersion">
+        <_Parameter1>$(FullVersion)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyInformationalVersion">
+        <_Parameter1>$(GitHash)</_Parameter1>
+      </AssemblyAttributes>
+    </ItemGroup>
+    <WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)BuildVersion.cs" AssemblyAttributes="@(AssemblyAttributes)" />
+  </Target>
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <Compile Include="$(IntermediateOutputPath)\BuildVersion.cs">
+      <AutoGen>true</AutoGen>
+      <Link>Properties\BuildVersion.cs</Link>
+    </Compile>
+  </ItemGroup>
+
+  <!-- C++ generate version -->
+  <Target Name="GenerateVersionCpp" BeforeTargets="PrepareForBuild" Inputs="$(MSBuildThisFileDirectory)Version.in.rc" Outputs="$(IntDir)Version.rc">
+    <GitVersion LocalPath="$(MSBuildProjectDirectory)" ToolPath="C:\Program Files\Git\bin" Short="False" >
+      <Output TaskParameter="CommitHash" PropertyName="GitHash"/>
+    </GitVersion>
+    <ReadLinesFromFile File="$(MSBuildThisFileDirectory)Version.in.rc">
+      <Output TaskParameter="Lines" ItemName="VersionInputLines"/>
+    </ReadLinesFromFile>
+    <WriteLinesToFile File="$(IntDir)Version.rc" Overwrite="true" Lines="@(VersionInputLines->Replace('!GIT_HASH!', '$(GitHash)')->Replace('!MANUFACTURER!', '$(Manufacturer)')->Replace('!PROJECT_NAME!', '$(MSBuildProjectName)')->Replace('!COMMA_SEPARATED_FILE_VERSION!', '$(FullVersion.Replace('.', ','))')->Replace('!DOT_SEPARATED_FILE_VERSION!', '$(FullVersion)')->Replace('!DOT_SEPARATED_PRODUCT_VERSION!', '$(FullVersion)')->Replace('!COMMA_SEPARATED_PRODUCT_VERSION!', '$(FullVersion.Replace('.', ','))'))"/>
+  </Target>
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+    <ResourceCompile Include="$(IntDir)Version.rc" />
+  </ItemGroup>
+
+</Project>
