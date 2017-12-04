@@ -9,6 +9,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Create tidy builds with C++ and C# version resource and hierarchical solution build folder</description>
     <copyright>Copyright Nir Bar 2017</copyright>
+	<projectUrl>https://github.com/nirbar/TidyBuild</projectUrl>
     <tags>$GitHash$</tags>
 	<dependencies>
 		<dependency id="MSBuildTasks" version="1.5.0.235"/>
