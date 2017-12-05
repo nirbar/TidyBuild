@@ -9,9 +9,9 @@
 	<Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
 
     <!-- Output folder -->
-    <OutputPath>$(SolutionDir)build\bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
-    <IntermediateOutputPath>$(SolutionDir)build\obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
-	<OutDirLib>$(SolutionDir)build\lib\$(Configuration)\</OutDirLib>
+    <OutputPath Condition="'$(OutputPath)'==''">$(SolutionDir)build\bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
+	<OutDirLib Condition="'$(OutDirLib)'==''">$(SolutionDir)build\lib\$(Configuration)\</OutDirLib>
+    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(SolutionDir)build\obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
     <OutDir>$(OutputPath)</OutDir>
     <IntDir>$(IntermediateOutputPath)</IntDir>
     <OutputDirectory>$(OutputPath)</OutputDirectory>
