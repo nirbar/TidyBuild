@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <Import Project="$(SolutionDir)packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets"/>
-  <Import Project="$(SolutionDir)TidyBuild.local.props" Condition="Exists('$(SolutionDir)TidyBuild.local.props')"/>
+  <Import Project="$(SolutionDir)TidyBuild.custom.props" Condition="Exists('$(SolutionDir)TidyBuild.custom.props')"/>
 
   <PropertyGroup>
     <!-- Version number -->
-    <BuildNumber></BuildNumber>
     <FullVersion Condition="'$(FullVersion)'==''">$([System.DateTime]::Now.ToString("yy.MM.dd.HHmm"))</FullVersion>
 	<Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
 
     <!-- Output folder -->
     <OutputPath>$(SolutionDir)build\bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
     <IntermediateOutputPath>$(SolutionDir)build\obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
+	<OutDirLib>$(SolutionDir)build\lib\$(Configuration)\</OutDirLib>
     <OutDir>$(OutputPath)</OutDir>
     <IntDir>$(IntermediateOutputPath)</IntDir>
     <OutputDirectory>$(OutputPath)</OutputDirectory>
@@ -56,5 +56,12 @@
   <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
     <ResourceCompile Include="$(IntDir)Version.rc" />
   </ItemGroup>
+  <ItemDefinitionGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+    <Link>
+      <ImportLibrary>$(OutDirLib)$(TargetName).lib</ImportLibrary>
+	  <AdditionalLibraryDirectories>$(OutDirLib)</AdditionalLibraryDirectories>
+	</Link>
+  </ItemDefinitionGroup>
 
+  <Import Project="$(SolutionDir)TidyBuild.post.props" Condition="Exists('$(SolutionDir)TidyBuild.post.props')"/>
 </Project>
