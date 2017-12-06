@@ -6,24 +6,35 @@
   <PropertyGroup>
     <!-- Version number -->
     <FullVersion Condition="'$(FullVersion)'==''">$([System.DateTime]::Now.ToString("yy.MM.dd.HHmm"))</FullVersion>
-	<Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
+    <Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
 
     <!-- Output folder -->
     <OutputPath Condition="'$(OutputPath)'==''">$(SolutionDir)build\bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
-	<OutDirLib Condition="'$(OutDirLib)'==''">$(SolutionDir)build\lib\$(Configuration)\</OutDirLib>
+    <OutDirLib Condition="'$(OutDirLib)'==''">$(SolutionDir)build\lib\$(Configuration)\</OutDirLib>
     <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(SolutionDir)build\obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
     <OutDir>$(OutputPath)</OutDir>
     <IntDir>$(IntermediateOutputPath)</IntDir>
     <OutputDirectory>$(OutputPath)</OutputDirectory>
     <IntermediateDirectory>$(IntermediateOutputPath)</IntermediateDirectory>
+
+    <!-- Tools -->
+    <GitBinFolder Condition="'$(GitBinFolder)'==''">C:\Program Files\Git\bin</GitBinFolder>
   </PropertyGroup>
+
+  <!-- C++ input/output lib folder -->
+  <ItemDefinitionGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+    <Link>
+      <ImportLibrary>$(OutDirLib)$(TargetName).lib</ImportLibrary>
+      <AdditionalLibraryDirectories>$(OutDirLib)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
 
   <!-- =================================================================== -->
   <!-- Version -->
   <!-- =================================================================== -->
   <!-- C# generate version -->
-  <Target Name="GenerateVersion" BeforeTargets="BeforeCompile">
-    <GitVersion LocalPath="$(MSBuildProjectDirectory)" ToolPath="C:\Program Files\Git\bin" Short="False" >
+  <Target Name="GenerateVersion" Condition="'$(MSBuildProjectExtension)' == '.csproj'" BeforeTargets="BeforeCompile;RemoveAssemblyInfoVersion">
+    <GitVersion LocalPath="$(MSBuildProjectDirectory)" ToolPath="$(GitBinFolder)" Short="False" >
       <Output TaskParameter="CommitHash" PropertyName="GitHash"/>
     </GitVersion>
     <ItemGroup>
@@ -42,10 +53,20 @@
       <Link>Properties\BuildVersion.cs</Link>
     </Compile>
   </ItemGroup>
+  <!-- Remove duplicate version attributes from AssemblyInfo.cs -->
+  <Target Name="RemoveAssemblyInfoVersion" Condition="'$(MSBuildProjectExtension)' == '.csproj' And Exists('$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs')" BeforeTargets="BeforeCompile">
+    <ReadLinesFromFile File="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs">
+      <Output TaskParameter="Lines" ItemName="AssemblyInfoLines"/>
+    </ReadLinesFromFile>
+    <RegexReplace Input="@(AssemblyInfoLines)" Expression="^\s*(\[.*\b(AssemblyVersion|AssemblyFileVersion)\b.*)" Replacement="// Commented out by TidyBuild: $1" Count="1">
+      <Output TaskParameter="Output" ItemName="AssemblyInfoLines1" />
+    </RegexReplace>
+    <WriteLinesToFile File="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs" Overwrite="true" Lines="@(AssemblyInfoLines1)"/>
+  </Target>
 
   <!-- C++ generate version -->
-  <Target Name="GenerateVersionCpp" BeforeTargets="PrepareForBuild" Inputs="$(MSBuildThisFileDirectory)Version.in.rc" Outputs="$(IntDir)Version.rc">
-    <GitVersion LocalPath="$(MSBuildProjectDirectory)" ToolPath="C:\Program Files\Git\bin" Short="False" >
+  <Target Name="GenerateVersionCpp" BeforeTargets="PrepareForBuild" Inputs="$(MSBuildThisFileDirectory)Version.in.rc" Outputs="$(IntDir)Version.rc" Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+    <GitVersion LocalPath="$(MSBuildProjectDirectory)" ToolPath="$(GitBinFolder)" Short="False" >
       <Output TaskParameter="CommitHash" PropertyName="GitHash"/>
     </GitVersion>
     <ReadLinesFromFile File="$(MSBuildThisFileDirectory)Version.in.rc">
@@ -56,12 +77,6 @@
   <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
     <ResourceCompile Include="$(IntDir)Version.rc" />
   </ItemGroup>
-  <ItemDefinitionGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
-    <Link>
-      <ImportLibrary>$(OutDirLib)$(TargetName).lib</ImportLibrary>
-	  <AdditionalLibraryDirectories>$(OutDirLib)</AdditionalLibraryDirectories>
-	</Link>
-  </ItemDefinitionGroup>
 
   <Import Project="$(SolutionDir)TidyBuild.post.props" Condition="Exists('$(SolutionDir)TidyBuild.post.props')"/>
 </Project>
