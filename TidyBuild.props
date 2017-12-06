@@ -25,7 +25,7 @@
   <ItemDefinitionGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
     <Link>
       <ImportLibrary>$(OutDirLib)$(TargetName).lib</ImportLibrary>
-      <AdditionalLibraryDirectories>$(OutDirLib)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDirLib);$(OutDir);$(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
 
