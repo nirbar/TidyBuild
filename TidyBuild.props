@@ -66,10 +66,13 @@
 
   <!-- C++ generate version -->
   <Target Name="GenerateVersionCpp" BeforeTargets="PrepareForBuild" Inputs="$(MSBuildThisFileDirectory)Version.in.rc" Outputs="$(IntDir)Version.rc" Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+	<PropertyGroup>
+		<VersionTags>@(VersionTag->'%(Identity)', ' ')</VersionTags>
+	</PropertyGroup>
     <ReadLinesFromFile File="$(MSBuildThisFileDirectory)Version.in.rc">
       <Output TaskParameter="Lines" ItemName="VersionInputLines"/>
     </ReadLinesFromFile>
-    <WriteLinesToFile File="$(IntDir)Version.rc" Overwrite="true" Lines="@(VersionInputLines->Replace('!VERSION_TAG!', '@(VersionTag->'%(Identity)', ' ')')->Replace('!MANUFACTURER!', '$(Manufacturer)')->Replace('!PROJECT_NAME!', '$(MSBuildProjectName)')->Replace('!COMMA_SEPARATED_FILE_VERSION!', '$(FullVersion.Replace('.', ','))')->Replace('!DOT_SEPARATED_FILE_VERSION!', '$(FullVersion)')->Replace('!DOT_SEPARATED_PRODUCT_VERSION!', '$(FullVersion)')->Replace('!COMMA_SEPARATED_PRODUCT_VERSION!', '$(FullVersion.Replace('.', ','))'))"/>
+    <WriteLinesToFile File="$(IntDir)Version.rc" Overwrite="true" Lines="@(VersionInputLines->Replace('!VERSION_TAG!', '$(VersionTags)')->Replace('!MANUFACTURER!', '$(Manufacturer)')->Replace('!PROJECT_NAME!', '$(MSBuildProjectName)')->Replace('!COMMA_SEPARATED_FILE_VERSION!', '$(FullVersion.Replace('.', ','))')->Replace('!DOT_SEPARATED_FILE_VERSION!', '$(FullVersion)')->Replace('!DOT_SEPARATED_PRODUCT_VERSION!', '$(FullVersion)')->Replace('!COMMA_SEPARATED_PRODUCT_VERSION!', '$(FullVersion.Replace('.', ','))'))"/>
   </Target>
   <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
     <ResourceCompile Include="$(IntDir)Version.rc" />
