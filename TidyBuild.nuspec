@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TidyBuild</id>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <title>TidyBuild</title>
     <authors>Nir Bar</authors>
     <owners>Nir Bar</owners>
@@ -10,7 +10,6 @@
     <description>Create tidy builds with C++ and C# version resource and hierarchical solution build folder</description>
     <copyright>Copyright Nir Bar 2017</copyright>
 	<projectUrl>https://github.com/nirbar/TidyBuild</projectUrl>
-    <tags>$GitHash$</tags>
 	<developmentDependency>true</developmentDependency>
 	<dependencies>
 		<dependency id="MSBuildTasks" version="1.5.0.235"/>
