@@ -26,12 +26,6 @@
     </Link>
   </ItemDefinitionGroup>
 
-  <!-- VersionTag items will be placed in AssemblyInformationalVersion (C#) and FileDescription resource (C++) -->
-  <ItemGroup>
-    <VersionTag Include="Tag"/>
-    <VersionTag Remove="Tag"/>
-  </ItemGroup>
-
   <!-- =================================================================== -->
   <!-- Version -->
   <!-- =================================================================== -->
@@ -42,7 +36,7 @@
         <_Parameter1>$(FullVersion)</_Parameter1>
       </AssemblyAttributes>
       <AssemblyAttributes Include="AssemblyInformationalVersion">
-        <_Parameter1>@(VersionTag->'%(Identity)', ' ')</_Parameter1>
+        <_Parameter1>@(VersionTag->'%(Identity)', ' ') $(VersionTag)</_Parameter1>
       </AssemblyAttributes>
     </ItemGroup>
     <WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)BuildVersion.cs" AssemblyAttributes="@(AssemblyAttributes)" />
@@ -67,7 +61,7 @@
   <!-- C++ generate version -->
   <Target Name="GenerateVersionCpp" BeforeTargets="PrepareForBuild" Inputs="$(MSBuildThisFileDirectory)Version.in.rc" Outputs="$(IntDir)Version.rc" Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
 	<PropertyGroup>
-		<VersionTags>@(VersionTag->'%(Identity)', ' ')</VersionTags>
+		<VersionTags>@(VersionTag->'%(Identity)', ' ') $(VersionTag)</VersionTags>
 	</PropertyGroup>
     <ReadLinesFromFile File="$(MSBuildThisFileDirectory)Version.in.rc">
       <Output TaskParameter="Lines" ItemName="VersionInputLines"/>
