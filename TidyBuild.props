@@ -39,6 +39,7 @@
         <_Parameter1>@(VersionTag->'%(Identity)', ' ') $(VersionTag)</_Parameter1>
       </AssemblyAttributes>
     </ItemGroup>
+	<MkDir Directories="$(IntermediateOutputPath)" Condition="!Exists('$(IntermediateOutputPath)')"/>
     <WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)BuildVersion.cs" AssemblyAttributes="@(AssemblyAttributes)" />
   </Target>
   <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
