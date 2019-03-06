@@ -39,7 +39,7 @@
         <_Parameter1>@(VersionTag->'%(Identity)', ' ') $(VersionTag)</_Parameter1>
       </AssemblyAttributes>
     </ItemGroup>
-	<MkDir Directories="$(IntermediateOutputPath)" Condition="!Exists('$(IntermediateOutputPath)')"/>
+	<MakeDir Directories="$(IntermediateOutputPath)" Condition="!Exists('$(IntermediateOutputPath)')"/>
     <WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)BuildVersion.cs" AssemblyAttributes="@(AssemblyAttributes)" />
   </Target>
   <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
@@ -67,6 +67,7 @@
     <ReadLinesFromFile File="$(MSBuildThisFileDirectory)Version.in.rc">
       <Output TaskParameter="Lines" ItemName="VersionInputLines"/>
     </ReadLinesFromFile>
+	<MakeDir Directories="$(IntDir)" Condition="!Exists('$(IntDir)')"/>
     <WriteLinesToFile File="$(IntDir)Version.rc" Overwrite="true" Lines="@(VersionInputLines->Replace('!VERSION_TAG!', '$(VersionTags)')->Replace('!MANUFACTURER!', '$(Manufacturer)')->Replace('!PROJECT_NAME!', '$(MSBuildProjectName)')->Replace('!COMMA_SEPARATED_FILE_VERSION!', '$(FullVersion.Replace('.', ','))')->Replace('!DOT_SEPARATED_FILE_VERSION!', '$(FullVersion)')->Replace('!DOT_SEPARATED_PRODUCT_VERSION!', '$(FullVersion)')->Replace('!COMMA_SEPARATED_PRODUCT_VERSION!', '$(FullVersion.Replace('.', ','))'))"/>
   </Target>
   <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
