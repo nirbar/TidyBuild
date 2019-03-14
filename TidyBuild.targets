@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(SolutionDir)TidyBuild.custom.targets" Condition="Exists('$(SolutionDir)TidyBuild.custom.targets')"/>
+
+  <!-- =================================================================== -->
+  <!-- Version -->
+  <!-- =================================================================== -->
+  <!-- C# generate version -->
+  <Target Name="GenerateVersion" Condition="'$(MSBuildProjectExtension)' == '.csproj'" BeforeTargets="BeforeCompile;RemoveAssemblyInfoVersion">
+    <ItemGroup>
+      <AssemblyAttributes Include="AssemblyVersion">
+        <_Parameter1>$(FullVersion)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyInformationalVersion">
+        <_Parameter1>@(VersionTag->'%(Identity)', ' ') $(VersionTag)</_Parameter1>
+      </AssemblyAttributes>
+    </ItemGroup>
+	<MakeDir Directories="$(IntermediateOutputPath)" Condition="!Exists('$(IntermediateOutputPath)')"/>
+    <WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)\BuildVersion.cs" AssemblyAttributes="@(AssemblyAttributes)" />
+  </Target>
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+    <Compile Include="$(IntermediateOutputPath)\BuildVersion.cs">
+      <AutoGen>true</AutoGen>
+      <Link>Properties\BuildVersion.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <!-- Remove duplicate version attributes from AssemblyInfo.cs -->
+  <Target Name="RemoveAssemblyInfoVersion" Condition="'$(MSBuildProjectExtension)' == '.csproj' And Exists('$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs')" BeforeTargets="BeforeCompile">
+    <ReadLinesFromFile File="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs">
+      <Output TaskParameter="Lines" ItemName="AssemblyInfoLines"/>
+    </ReadLinesFromFile>
+    <RegexReplace Input="@(AssemblyInfoLines)" Expression="^\s*(\[.*\b(AssemblyVersion|AssemblyFileVersion)\b.*)" Replacement="// Commented out by TidyBuild: $1" Count="1">
+      <Output TaskParameter="Output" ItemName="AssemblyInfoLines1" />
+    </RegexReplace>
+    <WriteLinesToFile File="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs" Overwrite="true" Lines="@(AssemblyInfoLines1)"/>
+  </Target>
+
+  <!-- C++ generate version -->
+  <Target Name="GenerateVersionCpp" BeforeTargets="PrepareForBuild" Inputs="$(MSBuildThisFileDirectory)Version.in.rc" Outputs="$(IntDir)Version.rc" Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+	<PropertyGroup>
+		<VersionTags>@(VersionTag->'%(Identity)', ' ') $(VersionTag)</VersionTags>
+	</PropertyGroup>
+    <ReadLinesFromFile File="$(MSBuildThisFileDirectory)Version.in.rc">
+      <Output TaskParameter="Lines" ItemName="VersionInputLines"/>
+    </ReadLinesFromFile>
+	<MakeDir Directories="$(IntDir)" Condition="!Exists('$(IntDir)')"/>
+    <WriteLinesToFile File="$(IntDir)\Version.rc" Overwrite="true" Lines="@(VersionInputLines->Replace('!VERSION_TAG!', '$(VersionTags)')->Replace('!MANUFACTURER!', '$(Manufacturer)')->Replace('!PROJECT_NAME!', '$(MSBuildProjectName)')->Replace('!COMMA_SEPARATED_FILE_VERSION!', '$(FullVersion.Replace('.', ','))')->Replace('!DOT_SEPARATED_FILE_VERSION!', '$(FullVersion)')->Replace('!DOT_SEPARATED_PRODUCT_VERSION!', '$(FullVersion)')->Replace('!COMMA_SEPARATED_PRODUCT_VERSION!', '$(FullVersion.Replace('.', ','))'))"/>
+  </Target>
+  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+    <ResourceCompile Include="$(IntDir)\Version.rc" />
+  </ItemGroup>
+</Project>

@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>TidyBuild</id>
-    <version>1.0.10</version>
+    <version>1.1.0</version>
     <title>TidyBuild</title>
     <authors>Nir Bar</authors>
     <owners>Nir Bar</owners>
@@ -18,6 +18,7 @@
 
   <files>
     <file src="TidyBuild.props" target="build" />
+    <file src="TidyBuild.targets" target="build" />
     <file src="Version.in.rc" target="build" />
   </files>                              
 </package>                              
