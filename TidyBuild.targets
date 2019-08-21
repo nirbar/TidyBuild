@@ -6,7 +6,7 @@
   <!-- Version -->
   <!-- =================================================================== -->
   <!-- C# generate version -->
-  <Target Name="GenerateVersion" Condition="'$(MSBuildProjectExtension)' == '.csproj'" BeforeTargets="BeforeCompile;RemoveAssemblyInfoVersion">
+  <Target Name="GenerateVersion" Condition="'$(MSBuildProjectExtension)' == '.csproj'" BeforeTargets="CoreCompile;BeforeCompile;RemoveAssemblyInfoVersion">
     <ItemGroup>
       <AssemblyAttributes Include="AssemblyVersion">
         <_Parameter1>$(FullVersion)</_Parameter1>
