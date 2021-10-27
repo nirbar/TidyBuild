@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
-  <Import Project="$(SolutionDir)TidyBuild.custom.props" Condition="Exists('$(SolutionDir)TidyBuild.custom.props')"/>
+  <Import Project="$(SolutionDir)\TidyBuild.custom.props" Condition="Exists('$(SolutionDir)\TidyBuild.custom.props')"/>
 
   <PropertyGroup>
     <!-- Version number -->
@@ -8,9 +8,10 @@
     <Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
 
     <!-- Output folder -->
-    <OutputPath Condition="'$(OutputPath)'==''">$(SolutionDir)build\bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
-    <OutDirLib Condition="'$(OutDirLib)'==''">$(SolutionDir)build\lib\$(Configuration)\</OutDirLib>
-    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(SolutionDir)build\obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
+    <BuildFolder Condition="'$(BuildFolder)'==''">$(SolutionDir)\build</BuildFolder>
+    <OutputPath Condition="'$(OutputPath)'==''">$(BuildFolder)\bin\$(Configuration)\$(MSBuildProjectName)</OutputPath>
+    <OutDirLib Condition="'$(OutDirLib)'==''">$(BuildFolder)\lib\$(Configuration)</OutDirLib>
+    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(BuildFolder)\obj\$(Configuration)\$(MSBuildProjectName)</IntermediateOutputPath>
     <OutDir>$(OutputPath)</OutDir>
     <IntDir>$(IntermediateOutputPath)</IntDir>
     <OutputDirectory>$(OutputPath)</OutputDirectory>
