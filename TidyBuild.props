@@ -4,6 +4,7 @@
 
   <PropertyGroup>
     <!-- Version number -->
+	<TidyBuildGenerateVersion Condition="'$(TidyBuildGenerateVersion)'==''">true</TidyBuildGenerateVersion>
     <FullVersion Condition="'$(FullVersion)'==''">$([System.DateTime]::Now.ToString("yy.MM.dd.HHmm"))</FullVersion>
     <Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
 

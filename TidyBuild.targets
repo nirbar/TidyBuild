@@ -6,7 +6,7 @@
   <!-- Version -->
   <!-- =================================================================== -->
   <!-- C# generate version -->
-  <Target Name="GenerateVersion" Condition="'$(MSBuildProjectExtension)' == '.csproj'" BeforeTargets="CoreCompile;BeforeCompile;RemoveAssemblyInfoVersion">
+  <Target Name="GenerateVersion" Condition="$(TidyBuildGenerateVersion) And '$(MSBuildProjectExtension)' == '.csproj'" BeforeTargets="CoreCompile;BeforeCompile;RemoveAssemblyInfoVersion">
     <ItemGroup>
       <AssemblyAttributes Include="AssemblyVersion">
         <_Parameter1>$(FullVersion)</_Parameter1>
@@ -18,14 +18,14 @@
 	<MakeDir Directories="$(IntermediateOutputPath)" Condition="!Exists('$(IntermediateOutputPath)')"/>
     <WriteCodeFragment Language="C#" OutputFile="$(IntermediateOutputPath)\BuildVersion.cs" AssemblyAttributes="@(AssemblyAttributes)" />
   </Target>
-  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.csproj'">
+  <ItemGroup Condition="$(TidyBuildGenerateVersion) And '$(MSBuildProjectExtension)' == '.csproj'">
     <Compile Include="$(IntermediateOutputPath)\BuildVersion.cs">
       <AutoGen>true</AutoGen>
       <Link>Properties\BuildVersion.cs</Link>
     </Compile>
   </ItemGroup>
   <!-- Remove duplicate version attributes from AssemblyInfo.cs -->
-  <Target Name="RemoveAssemblyInfoVersion" Condition="'$(MSBuildProjectExtension)' == '.csproj' And Exists('$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs')" BeforeTargets="BeforeCompile">
+  <Target Name="RemoveAssemblyInfoVersion" Condition="$(TidyBuildGenerateVersion) And '$(MSBuildProjectExtension)' == '.csproj' And Exists('$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs')" BeforeTargets="BeforeCompile">
     <ReadLinesFromFile File="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs">
       <Output TaskParameter="Lines" ItemName="AssemblyInfoLines"/>
     </ReadLinesFromFile>
@@ -36,7 +36,7 @@
   </Target>
 
   <!-- C++ generate version -->
-  <Target Name="GenerateVersionCpp" BeforeTargets="PrepareForBuild" Inputs="$(MSBuildThisFileDirectory)Version.in.rc" Outputs="$(IntDir)Version.rc" Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+  <Target Name="GenerateVersionCpp" BeforeTargets="PrepareForBuild" Inputs="$(MSBuildThisFileDirectory)Version.in.rc" Outputs="$(IntDir)Version.rc" Condition="$(TidyBuildGenerateVersion) And '$(MSBuildProjectExtension)' == '.vcxproj'">
 	<PropertyGroup>
 		<VersionTags>@(VersionTag->'%(Identity)', ' ') $(VersionTag)</VersionTags>
 	</PropertyGroup>
@@ -46,7 +46,7 @@
 	<MakeDir Directories="$(IntDir)" Condition="!Exists('$(IntDir)')"/>
     <WriteLinesToFile File="$(IntDir)\Version.rc" Overwrite="true" Lines="@(VersionInputLines->Replace('!VERSION_TAG!', '$(VersionTags)')->Replace('!MANUFACTURER!', '$(Manufacturer)')->Replace('!PROJECT_NAME!', '$(MSBuildProjectName)')->Replace('!COMMA_SEPARATED_FILE_VERSION!', '$(FullVersion.Replace('.', ','))')->Replace('!DOT_SEPARATED_FILE_VERSION!', '$(FullVersion)')->Replace('!DOT_SEPARATED_PRODUCT_VERSION!', '$(FullVersion)')->Replace('!COMMA_SEPARATED_PRODUCT_VERSION!', '$(FullVersion.Replace('.', ','))'))"/>
   </Target>
-  <ItemGroup Condition="'$(MSBuildProjectExtension)' == '.vcxproj'">
+  <ItemGroup Condition="$(TidyBuildGenerateVersion) And '$(MSBuildProjectExtension)' == '.vcxproj'">
     <ResourceCompile Include="$(IntDir)\Version.rc" />
   </ItemGroup>
 </Project>
