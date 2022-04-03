@@ -8,15 +8,22 @@
     <FullVersion Condition="'$(FullVersion)'==''">$([System.DateTime]::Now.ToString("yy.MM.dd.HHmm"))</FullVersion>
     <Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
 
-    <!-- Output folder -->
-    <BuildFolder Condition="'$(BuildFolder)'==''">$(SolutionDir)\build</BuildFolder>
-    <OutputPath Condition="'$(OutputPath)'==''">$(BuildFolder)\bin\$(Configuration)\$(MSBuildProjectName)</OutputPath>
-    <OutDirLib Condition="'$(OutDirLib)'==''">$(BuildFolder)\lib\$(Configuration)</OutDirLib>
-    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(BuildFolder)\obj\$(Configuration)\$(MSBuildProjectName)</IntermediateOutputPath>
-    <OutDir>$(OutputPath)</OutDir>
-    <IntDir>$(IntermediateOutputPath)</IntDir>
-    <OutputDirectory>$(OutputPath)</OutputDirectory>
-    <IntermediateDirectory>$(IntermediateOutputPath)</IntermediateDirectory>
+    <!-- Default folders -->
+    <TidyBuildDefaultBuildFolder>$(SolutionDir)\build</TidyBuildDefaultBuildFolder>
+    <TidyBuildDefaultBinFolder>$(BuildFolder)\bin\$(Configuration)\$(MSBuildProjectName)</TidyBuildDefaultBinFolder>
+    <TidyBuildDefaultLibFolder>$(BuildFolder)\lib\$(Configuration)</TidyBuildDefaultLibFolder>
+    <TidyBuildDefaultObjFolder>$(BuildFolder)\obj\$(Configuration)\$(MSBuildProjectName)</TidyBuildDefaultObjFolder>
+
+    <!-- Output folders -->
+    <BuildFolder Condition="'$(BuildFolder)'==''">$(TidyBuildDefaultBuildFolder)</BuildFolder>
+    <OutputPath Condition="'$(OutputPath)'==''">$(TidyBuildDefaultBinFolder)</OutputPath>
+    <OutDirLib Condition="'$(OutDirLib)'==''">$(TidyBuildDefaultLibFolder)</OutDirLib>
+    <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(TidyBuildDefaultObjFolder)</IntermediateOutputPath>
+    
+	<OutDir Condition="'$(OutDir)'==''">$(OutputPath)</OutDir>
+    <IntDir Condition="'$(IntDir)'==''">$(IntermediateOutputPath)</IntDir>
+    <OutputDirectory Condition="'$(OutputDirectory)'==''">$(OutputPath)</OutputDirectory>
+    <IntermediateDirectory Condition="'$(IntermediateDirectory)'==''">$(IntermediateOutputPath)</IntermediateDirectory>
   </PropertyGroup>
 
   <!-- C++ input/output lib folder -->
