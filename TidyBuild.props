@@ -8,14 +8,16 @@
     <FullVersion Condition="'$(FullVersion)'==''">$([System.DateTime]::Now.ToString("yy.MM.dd.HHmm"))</FullVersion>
     <Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
 
-    <!-- Default folders -->
+    <!-- Root build folder -->
     <TidyBuildDefaultBuildFolder>$(SolutionDir)\build</TidyBuildDefaultBuildFolder>
+    <BuildFolder Condition="'$(BuildFolder)'==''">$(TidyBuildDefaultBuildFolder)</BuildFolder>
+
+    <!-- Default folders -->
     <TidyBuildDefaultBinFolder>$(BuildFolder)\bin\$(Configuration)\$(MSBuildProjectName)</TidyBuildDefaultBinFolder>
     <TidyBuildDefaultLibFolder>$(BuildFolder)\lib\$(Configuration)</TidyBuildDefaultLibFolder>
     <TidyBuildDefaultObjFolder>$(BuildFolder)\obj\$(Configuration)\$(MSBuildProjectName)</TidyBuildDefaultObjFolder>
 
     <!-- Output folders -->
-    <BuildFolder Condition="'$(BuildFolder)'==''">$(TidyBuildDefaultBuildFolder)</BuildFolder>
     <OutputPath Condition="'$(OutputPath)'==''">$(TidyBuildDefaultBinFolder)</OutputPath>
     <OutDirLib Condition="'$(OutDirLib)'==''">$(TidyBuildDefaultLibFolder)</OutDirLib>
     <IntermediateOutputPath Condition="'$(IntermediateOutputPath)'==''">$(TidyBuildDefaultObjFolder)</IntermediateOutputPath>
