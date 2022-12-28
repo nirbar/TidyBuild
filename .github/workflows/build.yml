@@ -1,0 +1,20 @@
+name: TidyBuild build
+on:
+  push:
+    tags:
+      - v*
+jobs:
+  TidyBuild-Build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: 'true'
+      - uses: microsoft/setup-msbuild@v1.0.2          
+
+      - name: Create and publish nuget package
+        run: |
+          nuget pack
+          dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+          dotnet nuget push TidyBuild.*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source github
+          dotnet nuget push TidyBuild.*.nupkg --api-key ${{ secrets.NUGET_TOKEN }} --source https://api.nuget.org/v3/index.json

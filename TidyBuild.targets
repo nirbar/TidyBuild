@@ -12,7 +12,10 @@
         <_Parameter1>$(FullVersion)</_Parameter1>
       </AssemblyAttributes>
       <AssemblyAttributes Include="AssemblyInformationalVersion">
-        <_Parameter1>@(VersionTag->'%(Identity)', ' ') $(VersionTag)</_Parameter1>
+        <_Parameter1>$(FullVersion)</_Parameter1>
+      </AssemblyAttributes>
+      <AssemblyAttributes Include="AssemblyFileVersion">
+        <_Parameter1>$(FullVersion)</_Parameter1>
       </AssemblyAttributes>
     </ItemGroup>
 	<MakeDir Directories="$(IntermediateOutputPath)" Condition="!Exists('$(IntermediateOutputPath)')"/>
@@ -29,7 +32,7 @@
     <ReadLinesFromFile File="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs">
       <Output TaskParameter="Lines" ItemName="AssemblyInfoLines"/>
     </ReadLinesFromFile>
-    <RegexReplace Input="@(AssemblyInfoLines)" Expression="^\s*(\[.*\b(AssemblyVersion|AssemblyFileVersion)\b.*)" Replacement="// Commented out by TidyBuild: $1" Count="1">
+    <RegexReplace Input="@(AssemblyInfoLines)" Expression="^\s*(\[.*\b(AssemblyVersion|AssemblyFileVersion|AssemblyInformationalVersion)\b.*)" Replacement="// Commented out by TidyBuild: $1" Count="1">
       <Output TaskParameter="Output" ItemName="AssemblyInfoLines1" />
     </RegexReplace>
     <WriteLinesToFile File="$(MSBuildProjectDirectory)\Properties\AssemblyInfo.cs" Overwrite="true" Lines="@(AssemblyInfoLines1)"/>

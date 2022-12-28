@@ -9,13 +9,13 @@
     <Manufacturer Condition="'$(Manufacturer)'==''">$(MSBuildProjectName)</Manufacturer>
 
     <!-- Root build folder -->
-    <TidyBuildDefaultBuildFolder>$(SolutionDir)\build</TidyBuildDefaultBuildFolder>
+    <TidyBuildDefaultBuildFolder>$(SolutionDir)\build\</TidyBuildDefaultBuildFolder>
     <BuildFolder Condition="'$(BuildFolder)'==''">$(TidyBuildDefaultBuildFolder)</BuildFolder>
 
     <!-- Default folders -->
-    <TidyBuildDefaultBinFolder>$(BuildFolder)\bin\$(Configuration)\$(MSBuildProjectName)</TidyBuildDefaultBinFolder>
-    <TidyBuildDefaultLibFolder>$(BuildFolder)\lib\$(Configuration)</TidyBuildDefaultLibFolder>
-    <TidyBuildDefaultObjFolder>$(BuildFolder)\obj\$(Configuration)\$(MSBuildProjectName)</TidyBuildDefaultObjFolder>
+    <TidyBuildDefaultBinFolder>$(BuildFolder)\bin\$(Configuration)\$(MSBuildProjectName)\</TidyBuildDefaultBinFolder>
+    <TidyBuildDefaultLibFolder>$(BuildFolder)\lib\$(Configuration)\</TidyBuildDefaultLibFolder>
+    <TidyBuildDefaultObjFolder>$(BuildFolder)\obj\$(Configuration)\$(MSBuildProjectName)\</TidyBuildDefaultObjFolder>
 
     <!-- Output folders -->
     <OutputPath Condition="'$(OutputPath)'==''">$(TidyBuildDefaultBinFolder)</OutputPath>
