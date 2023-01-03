@@ -8,13 +8,13 @@
   <!-- C# generate version -->
   <Target Name="GenerateVersion" Condition="$(TidyBuildGenerateVersion) And '$(MSBuildProjectExtension)' == '.csproj'" BeforeTargets="CoreCompile;BeforeCompile;RemoveAssemblyInfoVersion">
     <ItemGroup>
-      <AssemblyAttributes Include="AssemblyVersion">
+      <AssemblyAttributes Include="System.Reflection.AssemblyVersionAttribute">
         <_Parameter1>$(FullVersion)</_Parameter1>
       </AssemblyAttributes>
-      <AssemblyAttributes Include="AssemblyInformationalVersion">
+      <AssemblyAttributes Include="System.Reflection.AssemblyInformationalVersionAttribute">
         <_Parameter1>$(FullVersion)</_Parameter1>
       </AssemblyAttributes>
-      <AssemblyAttributes Include="AssemblyFileVersion">
+      <AssemblyAttributes Include="System.Reflection.AssemblyFileVersionAttribute">
         <_Parameter1>$(FullVersion)</_Parameter1>
       </AssemblyAttributes>
     </ItemGroup>
